@@ -19,7 +19,7 @@ class BonAppetitScraper extends BaseScraper {
     this.recipe.name = $("meta[property='og:title']").attr("content");
     const tags = $("meta[name='keywords']").attr("content");
 
-    this.recipe.tags = tags ? tags.split(',') : [];
+    this.recipe.tags = tags ? tags.split(",") : [];
 
     const container = $('div[data-testid="IngredientList"]');
     const ingredientsContainer = container.children("div");
@@ -36,10 +36,7 @@ class BonAppetitScraper extends BaseScraper {
       instructions.push($(el).text());
     });
 
-    this.recipe.servings = container
-      .children("p")
-      .text()
-      .split(" ")[0];
+    this.recipe.servings = container.children("p").text().split(" ")[0];
   }
 }
 

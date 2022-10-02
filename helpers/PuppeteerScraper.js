@@ -13,7 +13,7 @@ const blockedResourceTypes = [
   "csp_report",
   "imageset",
   "stylesheet",
-  "font"
+  "font",
 ];
 
 const skippedResources = [
@@ -35,7 +35,7 @@ const skippedResources = [
   "mixpanel",
   "zedo",
   "clicksor",
-  "tiqcdn"
+  "tiqcdn",
 ];
 
 const BaseScraper = require("./BaseScraper");
@@ -58,16 +58,16 @@ class PuppeteerScraper extends BaseScraper {
    */
   async fetchDOMModel() {
     const browser = await puppeteer.launch({
-      headless: true
+      headless: true,
     });
     const page = await browser.newPage();
     await page.setRequestInterception(true);
 
-    await page.on("request", req => {
+    await page.on("request", (req) => {
       const requestUrl = req._url.split("?")[0].split("#")[0];
       if (
         blockedResourceTypes.indexOf(req.resourceType()) !== -1 ||
-        skippedResources.some(resource => requestUrl.indexOf(resource) !== -1)
+        skippedResources.some((resource) => requestUrl.indexOf(resource) !== -1)
       ) {
         req.abort();
       } else {
@@ -82,11 +82,10 @@ class PuppeteerScraper extends BaseScraper {
       await this.customPoll(page);
       html = await page.content();
     }
-    browser.close().catch(err => {
-    });
+    browser.close().catch((err) => {});
 
     if (response._status >= 400) {
-      this.defaultError()
+      this.defaultError();
     }
     return cheerio.load(html);
   }
@@ -94,12 +93,12 @@ class PuppeteerScraper extends BaseScraper {
   static async isElementVisible(page, cssSelector) {
     let visible = true;
     await page
-      .waitForSelector(cssSelector, {visible: true, timeout: 2000})
+      .waitForSelector(cssSelector, { visible: true, timeout: 2000 })
       .catch(() => {
         visible = false;
       });
     return visible;
-  };
+  }
 }
 
 module.exports = PuppeteerScraper;
